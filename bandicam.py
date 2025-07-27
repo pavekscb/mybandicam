@@ -14,7 +14,7 @@ class ScreenRecorder:
         self.master = master
         master.title("Запись экрана")
         
-        master.geometry("380x50") 
+        master.geometry("450x50") 
         master.resizable(False, False) 
         
         master.attributes('-topmost', True) 
@@ -50,6 +50,10 @@ class ScreenRecorder:
         self.stop_button = tk.Button(button_frame, text="⏹️", font=("Segoe UI Symbol", 14), command=self.stop_recording, state=tk.DISABLED)
         self.stop_button.pack(side=tk.LEFT, padx=5, pady=5)
 
+        # Кнопка для скриншота
+        self.screenshot_button = tk.Button(button_frame, text="📷", font=("Segoe UI Symbol", 14), command=self.take_screenshot)
+        self.screenshot_button.pack(side=tk.LEFT, padx=5, pady=5)
+
         self.open_folder_button = tk.Button(button_frame, text="📁", font=("Segoe UI Symbol", 14), command=self.open_output_folder)
         self.open_folder_button.pack(side=tk.LEFT, padx=5, pady=5)
 
@@ -75,7 +79,7 @@ class ScreenRecorder:
         monitor = {"top": self.record_y, "left": self.record_x,
                    "width": self.record_width, "height": self.record_height}
 
-        fps = 20
+        fps = 60
         fourcc = cv2.VideoWriter_fourcc(*'avc1') 
 
         width_aligned = self.record_width - (self.record_width % 2)
@@ -113,7 +117,6 @@ class ScreenRecorder:
             self.video_writer.release()
         print(f"Видео сохранено в: {os.path.abspath(self.output_filename)}")
 
-
     def start_recording(self):
         if self.recording:
             return
@@ -134,6 +137,7 @@ class ScreenRecorder:
         self.start_button.config(state=tk.DISABLED)
         self.pause_button.config(state=tk.NORMAL)
         self.stop_button.config(state=tk.NORMAL)
+        self.screenshot_button.config(state=tk.DISABLED) 
 
         self.record_thread = threading.Thread(target=self.record_screen)
         self.record_thread.start()
@@ -145,6 +149,7 @@ class ScreenRecorder:
                 self.pause_button.config(text="▶️")
                 if self.timer_id:
                     self.master.after_cancel(self.timer_id)
+                self.pause_start_time = datetime.now() 
             else:
                 self.pause_button.config(text="⏸️")
                 if self.pause_start_time:
@@ -169,17 +174,43 @@ class ScreenRecorder:
         self.start_button.config(state=tk.NORMAL)
         self.pause_button.config(state=tk.DISABLED, text="⏸️")
         self.stop_button.config(state=tk.DISABLED)
+        self.screenshot_button.config(state=tk.NORMAL) 
         
         print(f"Видео сохранено в: {os.path.abspath(self.output_filename)}")
 
+    def take_screenshot(self):
+        try:
+            with mss.mss() as sct:
+                monitor = sct.monitors[1] 
+                sct_img = sct.grab(monitor)
+                img = np.array(sct_img)
+                img_rgb = cv2.cvtColor(img, cv2.COLOR_RGBA2RGB)
+                
+                now = datetime.now()
+                timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")
+                
+                output_dir = os.path.dirname(self.output_filename) if self.output_filename else os.getcwd()
+                os.makedirs(output_dir, exist_ok=True)
+                
+                screenshot_filename = os.path.join(output_dir, f"screenshot_{timestamp}.jpg")
+                
+                cv2.imwrite(screenshot_filename, img_rgb)
+                
+                # --- Изменения здесь: Обратная связь на кнопке ---
+                self.screenshot_button.config(text="✅") # Меняем текст на кнопке на галочку
+                self.master.after(1000, lambda: self.screenshot_button.config(text="📷")) # Возвращаем через 1 секунду
+                # --- Конец изменений ---
+
+                print(f"Скриншот сохранен в: {os.path.abspath(screenshot_filename)}")
+
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Не удалось сделать скриншот: {e}")
+            print(f"Ошибка скриншота: {e}")
+
     def open_output_folder(self):
-        # --- Изменение здесь: Убрано всплывающее предупреждение ---
         folder_path = os.path.dirname(self.output_filename)
         if not folder_path or not os.path.exists(folder_path): 
-            # Если файл еще не создан или его директория не существует,
-            # просто открываем текущую рабочую директорию.
             folder_path = os.getcwd()
-        # --- Конец изменения ---
 
         try:
             if os.name == 'nt':
