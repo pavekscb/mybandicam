@@ -20,3 +20,4 @@ python bandicam.py
 pyinstaller --onefile --noconsole --icon=1.png bandicam.py
 
 5. После сборки, в папке DIST вы найдете bandicam.exe
+6. Добавлена кнопка скринота экрана и сохранение скриншота в файл .jpg
