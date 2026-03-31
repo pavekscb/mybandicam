@@ -1,5 +1,3 @@
-Вот полноценный, прокачанный README — можно просто **скопировать и вставить в GitHub** 👇
-
 ---
 
 # 📹 Bandicam (Python Screen Recorder)
@@ -100,6 +98,4 @@ pyinstaller --onefile --noconsole --icon=1.png bandicam.py
 * 🐛 Сообщи о баге в Issues
 
 ---
-
-
 
