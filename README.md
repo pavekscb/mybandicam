@@ -91,29 +91,6 @@ pyinstaller --onefile --noconsole --icon=1.png bandicam.py
 
 ---
 
-## 📈 Продвинутая фишка (авто-статистика через API)
-
-Если хочешь без shields — вот Python-скрипт, который покажет реальные загрузки:
-
-```python
-import requests
-
-repo = "USERNAME/REPOSITORY"
-
-url = f"https://api.github.com/repos/{repo}/releases"
-data = requests.get(url).json()
-
-total_downloads = 0
-
-for release in data:
-    for asset in release.get("assets", []):
-        total_downloads += asset.get("download_count", 0)
-
-print("Total downloads:", total_downloads)
-```
-
----
-
 ## 🌟 Поддержка проекта
 
 Если проект полезен:
