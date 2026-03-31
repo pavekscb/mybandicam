@@ -4,15 +4,6 @@
 
 # 📹 Bandicam (Python Screen Recorder)
 
-![GitHub release](https://img.shields.io/github/v/release/USERNAME/REPOSITORY)
-![GitHub downloads](https://img.shields.io/github/downloads/USERNAME/REPOSITORY/total)
-![GitHub stars](https://img.shields.io/github/stars/USERNAME/REPOSITORY?style=social)
-![GitHub forks](https://img.shields.io/github/forks/USERNAME/REPOSITORY?style=social)
-![GitHub issues](https://img.shields.io/github/issues/USERNAME/REPOSITORY)
-
-> ⚠️ ЗАМЕНИ `USERNAME/REPOSITORY` на свой репозиторий
-> Например: `paveksbit/bandicam`
-
 ---
 
 ## 🚀 О проекте
